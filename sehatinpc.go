@@ -167,35 +167,6 @@ func hapusKomponen(T *TabKomponen, n *int) {
 }
 }
 
-func catatLog(T *TabKomponen, n int) {
-	var ns, status string
-	var i int
-	var found bool
-	found = false
-
-	fmt.Print("Masukkan Nomor Seri komponen")
-	fmt.Scan(&ns)
-
-	for i = 0; i < n && !found; i++ {
-		if T[i].NomorSeri == ns {
-			found = true
-			if T[i].NLog < 50 {
-				fmt.Print("Masukkan Log (contoh: lag, overheat): ")
-				fmt.Scan(&status)
-				T[i].Log[T[i].NLog] = status
-				T[i].NLog = T[i].NLog + 1
-				T[i].StatusKesehatan = status
-				fmt.Println("Log berhasil dicatat.")
-			} else {
-				fmt.Println("Kapasitas log penuh.")
-			}
-		}
-	}
-	if !found {
-		fmt.Println("Komponen tidak ditemukan.")
-	}
-}
-
 func AscendingInsertionSorturutNomorSeri(T *TabKomponen, n int) {
 	var pass, i int
 	var temp Komponen
@@ -334,4 +305,33 @@ func tentukanStatus(suhu float64, beban float64) string {
 		status = "sehat"
 	}
 	return status
+}
+
+func catatLog(T *TabKomponen, n int) {
+	var ns, status string
+	var i int
+	var found bool
+	found = false
+
+	fmt.Print("Masukkan Nomor Seri komponen")
+	fmt.Scan(&ns)
+
+	for i = 0; i < n && !found; i++ {
+		if T[i].NomorSeri == ns {
+			found = true
+			if T[i].NLog < 50 {
+				fmt.Print("Masukkan Log (contoh: lag, overheat): ")
+				fmt.Scan(&status)
+				T[i].Log[T[i].NLog] = status
+				T[i].NLog = T[i].NLog + 1
+				T[i].StatusKesehatan = status
+				fmt.Println("Log berhasil dicatat.")
+			} else {
+				fmt.Println("Kapasitas log penuh.")
+			}
+		}
+	}
+	if !found {
+		fmt.Println("Komponen tidak ditemukan.")
+	}
 }
