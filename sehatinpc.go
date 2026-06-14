@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 const MAX = 1000
+
 type isiLog struct {
 	Suhu       float64
 	BebanKerja float64
@@ -24,9 +25,9 @@ func main() {
 	var data TabKomponen
 	var n, pilihan int
 	var jalan bool
-
 	jalan = true
-	for jalan {
+
+	for jalan == true {
 		fmt.Println("=====================================")
 		fmt.Println(" Sistem Monitoring Kesehatan PC ")
 		fmt.Println("=====================================")
@@ -84,20 +85,20 @@ func main() {
 func tambahKomponen(T *TabKomponen, n *int) {
 	if *n >= MAX {
 		fmt.Println("Kapasitas penuh!")
-		return
-	}
-	fmt.Print("Masukkan Nomor Seri: ")
-	fmt.Scan(&T[*n].NomorSeri)
-	fmt.Print("Masukkan Nama Komponen: ")
-	fmt.Scan(&T[*n].Nama)
-	fmt.Print("Masukkan Suhu: ")
-	fmt.Scan(&T[*n].Suhu)
-	fmt.Print("Masukkan Beban Kerja (%): ")
-	fmt.Scan(&T[*n].BebanKerja)
-	T[*n].StatusKesehatan = tentukanStatus(T[*n].Suhu, T[*n].BebanKerja)
+	} else {
+		fmt.Print("Masukkan Nomor Seri: ")
+		fmt.Scan(&T[*n].NomorSeri)
+		fmt.Print("Masukkan Nama Komponen: ")
+		fmt.Scan(&T[*n].Nama)
+		fmt.Print("Masukkan Suhu: ")
+		fmt.Scan(&T[*n].Suhu)
+		fmt.Print("Masukkan Beban Kerja (%): ")
+		fmt.Scan(&T[*n].BebanKerja)
+		T[*n].StatusKesehatan = tentukanStatus(T[*n].Suhu, T[*n].BebanKerja)
 
-	*n = *n + 1
-	fmt.Println("Komponen berhasil ditambahkan")
+		*n = *n + 1
+		fmt.Println("Komponen berhasil ditambahkan")
+	}
 }
 
 func ubahKomponen(T *TabKomponen, n int) {
@@ -269,7 +270,7 @@ func tampilStatistik(T TabKomponen, n int) {
 
 	for i = 0; i < n; i++ {
 		status = T[i].StatusKesehatan
-		if status == "lag" || status == "overheat"{
+		if status == "lag" || status == "overheat" {
 			bermasalah = bermasalah + 1
 		}
 		totalSuhu = totalSuhu + T[i].Suhu
@@ -286,13 +287,13 @@ func tampilSemua(T TabKomponen, n int) {
 
 	if n == 0 {
 		fmt.Println("Data masih kosong")
-		return
-	}
-	fmt.Println("Daftar Komponen:")
+	} else {
+		fmt.Println("Daftar Komponen:")
 
-	for i = 0; i < n; i++ {
-		fmt.Printf("%d. SN: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
-			i+1, T[i].NomorSeri, T[i].Nama, T[i].StatusKesehatan, T[i].Suhu, T[i].BebanKerja)
+		for i = 0; i < n; i++ {
+			fmt.Printf("%d. SN: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
+				i+1, T[i].NomorSeri, T[i].Nama, T[i].StatusKesehatan, T[i].Suhu, T[i].BebanKerja)
+		}
 	}
 }
 
@@ -332,7 +333,7 @@ func catatLog(T *TabKomponen, n int) {
 			} else {
 				fmt.Println("Kapasitas log penuh.")
 			}
-			
+
 			fmt.Print("Masukkan Suhu baru: ")
 			fmt.Scan(&suhuBaru)
 			fmt.Print("Masukkan Beban Kerja baru (%): ")
@@ -344,7 +345,7 @@ func catatLog(T *TabKomponen, n int) {
 			fmt.Println("Data komponen berhasil diperbarui.")
 		}
 	}
-	if !found {
+	if found == false {
 		fmt.Println("Komponen tidak ditemukan.")
 	}
 }
