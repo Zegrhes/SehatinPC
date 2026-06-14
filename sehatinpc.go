@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 const MAX = 1000
 type isiLog struct {
@@ -42,7 +40,7 @@ func main() {
 		fmt.Println("8. Cari Komponen (Status Kesehatan - Sequential Search)")
 		fmt.Println("9. Tampilkan Statistik")
 		fmt.Println("10. Tampilkan Semua Komponen")
-		fmt.Println("11. Inisialisasi Data Dummy")
+		fmt.Println("11. Inisialisasi Data")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih menu: ")
 		fmt.Scan(&pilihan)
@@ -351,40 +349,4 @@ func catatLog(T *TabKomponen, n int) {
 	if !found {
 		fmt.Println("Komponen tidak ditemukan.")
 	}
-}
-
-func isiDataDummy(T *TabKomponen, n *int) {
-	var nama = []string{
-		"Processor (CPU)", "RAM", "SSD", "HDD", "VGA (GPU)",
-		"Motherboard", "PSU (Power Supply)", "Kipas (Fan)", "Heatsink", "Optical Drive",
-	}
-	var nomorSeri = []string{
-		"CPU-001", "RAM-001", "SSD-001", "HDD-001", "GPU-001",
-		"MB-001", "PSU-001", "FAN-001", "HS-001", "ODD-001",
-	}
-	var suhuAwal = []float64{60, 68, 38, 35, 33, 40, 36, 28, 34, 30}
-	var bebanAwal = []float64{40, 72, 50, 45, 60, 30, 42, 65, 30, 5}
-	var suhuStep = []float64{3.0, 2.5, 1.0, 1.5, 2.0, 0.5, 2.5, 1.0, 0.8, 0.3}
-	var bebanStep = []float64{6.0, 3.0, 2.0, 4.0, 4.0, 1.0, 6.0, 3.5, 2.0, 0.5}
-	var i, j int
-	var log isiLog
-
-	*n = 10
-	for i = 0; i < *n; i++ {
-		T[i].NomorSeri = nomorSeri[i]
-		T[i].Nama = nama[i]
-		T[i].NLog = 10
-
-		for j = 0; j < 10; j++ {
-			log.Suhu = suhuAwal[i] + float64(j)*suhuStep[i]
-			log.BebanKerja = bebanAwal[i] + float64(j)*bebanStep[i]
-			T[i].Log[j] = log
-		}
-
-		T[i].Suhu = suhuAwal[i] + 10*suhuStep[i]
-		T[i].BebanKerja = bebanAwal[i] + 10*bebanStep[i]
-		T[i].StatusKesehatan = tentukanStatus(T[i].Suhu, T[i].BebanKerja)
-	}
-
-	fmt.Println("Data dummy berhasil diinisialisasi (10 komponen, masing-masing 10 log).")
 }
