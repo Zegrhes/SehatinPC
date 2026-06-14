@@ -5,6 +5,10 @@ import (
 )
 
 const MAX = 1000
+type isiLog struct {
+	Suhu       float64
+	BebanKerja float64
+}
 
 type Komponen struct {
 	NomorSeri       string
@@ -12,7 +16,7 @@ type Komponen struct {
 	StatusKesehatan string
 	Suhu            float64
 	BebanKerja      float64
-	Log             [50]string
+	Log             [1000]isiLog
 	NLog            int
 }
 
@@ -38,6 +42,7 @@ func main() {
 		fmt.Println("8. Cari Komponen (Status Kesehatan - Sequential Search)")
 		fmt.Println("9. Tampilkan Statistik")
 		fmt.Println("10. Tampilkan Semua Komponen")
+		fmt.Println("11. Inisialisasi Data Dummy")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih menu: ")
 		fmt.Scan(&pilihan)
@@ -71,6 +76,8 @@ func main() {
 				tampilStatistik(data, n)
 			case 10:
 				tampilSemua(data, n)
+			case 11:
+				isiDataDummy(&data, &n)
 			default:
 				fmt.Println("Pilihan tidak valid")
 			}
@@ -105,7 +112,7 @@ func ubahKomponen(T *TabKomponen, n int) {
 
 	if n == 0 {
 		fmt.Println("Data masih kosong")
-	}else {
+	} else {
 		tampilSemua(*T, n)
 
 		fmt.Print("Masukkan Nomor Seri komponen yang akan diubah: ")
@@ -143,28 +150,28 @@ func hapusKomponen(T *TabKomponen, n *int) {
 	if *n == 0 {
 		fmt.Println("Data masih kosong")
 	} else {
-	tampilSemua(*T, *n)
+		tampilSemua(*T, *n)
 
-	fmt.Print("Masukkan Nomor Seri komponen yang akan dihapus:")
-	fmt.Scan(&ns)
+		fmt.Print("Masukkan Nomor Seri komponen yang akan dihapus: ")
+		fmt.Scan(&ns)
 
-	for i < *n && idx == -1 {
-		if T[i].NomorSeri == ns {
-			idx = i
+		for i < *n && idx == -1 {
+			if T[i].NomorSeri == ns {
+				idx = i
+			}
+			i = i + 1
 		}
-		i = i + 1
-	}
 
-	if idx != -1 {
-		for i = idx; i < *n-1; i++ {
-			T[i] = T[i+1]
+		if idx != -1 {
+			for i = idx; i < *n-1; i++ {
+				T[i] = T[i+1]
+			}
+			*n = *n - 1
+			fmt.Println("Data berhasil dihapus")
+		} else {
+			fmt.Println("Komponen tidak ditemukan")
 		}
-		*n = *n - 1
-		fmt.Println("Data berhasil dihapus")
-	} else {
-		fmt.Println("Komponen tidak ditemukan")
 	}
-}
 }
 
 func AscendingInsertionSorturutNomorSeri(T *TabKomponen, n int) {
@@ -266,7 +273,7 @@ func tampilStatistik(T TabKomponen, n int) {
 
 	for i = 0; i < n; i++ {
 		status = T[i].StatusKesehatan
-		if status == "lag" || status == "overheat" || status == "bermasalah" || status == "rusak" || status == "panas" {
+		if status == "lag" || status == "overheat"{
 			bermasalah = bermasalah + 1
 		}
 		totalSuhu = totalSuhu + T[i].Suhu
@@ -308,30 +315,76 @@ func tentukanStatus(suhu float64, beban float64) string {
 }
 
 func catatLog(T *TabKomponen, n int) {
-	var ns, status string
+	var log isiLog
+	var ns string
+	var suhuBaru, bebanBaru float64
 	var i int
 	var found bool
 	found = false
 
-	fmt.Print("Masukkan Nomor Seri komponen")
+	fmt.Print("Masukkan Nomor Seri komponen: ")
 	fmt.Scan(&ns)
 
 	for i = 0; i < n && !found; i++ {
 		if T[i].NomorSeri == ns {
 			found = true
-			if T[i].NLog < 50 {
-				fmt.Print("Masukkan Log (contoh: lag, overheat): ")
-				fmt.Scan(&status)
-				T[i].Log[T[i].NLog] = status
+			if T[i].NLog < 1000 {
+				log.Suhu = T[i].Suhu
+				log.BebanKerja = T[i].BebanKerja
+				T[i].Log[T[i].NLog] = log
 				T[i].NLog = T[i].NLog + 1
-				T[i].StatusKesehatan = status
-				fmt.Println("Log berhasil dicatat.")
 			} else {
 				fmt.Println("Kapasitas log penuh.")
 			}
+			
+			fmt.Print("Masukkan Suhu baru: ")
+			fmt.Scan(&suhuBaru)
+			fmt.Print("Masukkan Beban Kerja baru (%): ")
+			fmt.Scan(&bebanBaru)
+
+			T[i].Suhu = suhuBaru
+			T[i].BebanKerja = bebanBaru
+			T[i].StatusKesehatan = tentukanStatus(T[i].Suhu, T[i].BebanKerja)
+			fmt.Println("Data komponen berhasil diperbarui.")
 		}
 	}
 	if !found {
 		fmt.Println("Komponen tidak ditemukan.")
 	}
+}
+
+func isiDataDummy(T *TabKomponen, n *int) {
+	var nama = []string{
+		"Processor (CPU)", "RAM", "SSD", "HDD", "VGA (GPU)",
+		"Motherboard", "PSU (Power Supply)", "Kipas (Fan)", "Heatsink", "Optical Drive",
+	}
+	var nomorSeri = []string{
+		"CPU-001", "RAM-001", "SSD-001", "HDD-001", "GPU-001",
+		"MB-001", "PSU-001", "FAN-001", "HS-001", "ODD-001",
+	}
+	var suhuAwal = []float64{60, 68, 38, 35, 33, 40, 36, 28, 34, 30}
+	var bebanAwal = []float64{40, 72, 50, 45, 60, 30, 42, 65, 30, 5}
+	var suhuStep = []float64{3.0, 2.5, 1.0, 1.5, 2.0, 0.5, 2.5, 1.0, 0.8, 0.3}
+	var bebanStep = []float64{6.0, 3.0, 2.0, 4.0, 4.0, 1.0, 6.0, 3.5, 2.0, 0.5}
+	var i, j int
+	var log isiLog
+
+	*n = 10
+	for i = 0; i < *n; i++ {
+		T[i].NomorSeri = nomorSeri[i]
+		T[i].Nama = nama[i]
+		T[i].NLog = 10
+
+		for j = 0; j < 10; j++ {
+			log.Suhu = suhuAwal[i] + float64(j)*suhuStep[i]
+			log.BebanKerja = bebanAwal[i] + float64(j)*bebanStep[i]
+			T[i].Log[j] = log
+		}
+
+		T[i].Suhu = suhuAwal[i] + 10*suhuStep[i]
+		T[i].BebanKerja = bebanAwal[i] + 10*bebanStep[i]
+		T[i].StatusKesehatan = tentukanStatus(T[i].Suhu, T[i].BebanKerja)
+	}
+
+	fmt.Println("Data dummy berhasil diinisialisasi (10 komponen, masing-masing 10 log).")
 }
