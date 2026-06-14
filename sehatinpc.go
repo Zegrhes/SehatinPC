@@ -35,13 +35,12 @@ func main() {
 		fmt.Println("2. Ubah Data Komponen")
 		fmt.Println("3. Hapus Komponen")
 		fmt.Println("4. Catat Log Status Komponen")
-		fmt.Println("5. Urutkan Komponen (Nomor Seri - Insertion Sort)")
-		fmt.Println("6. Urutkan Komponen (Nama - Selection Sort)")
+		fmt.Println("5. Urutkan Komponen (Nomor Seri - Insertion Sort - Ascending)")
+		fmt.Println("6. Urutkan Komponen (Nama - Selection Sort - Descending)")
 		fmt.Println("7. Cari Komponen (Nama - Binary Search)")
 		fmt.Println("8. Cari Komponen (Status Kesehatan - Sequential Search)")
 		fmt.Println("9. Tampilkan Statistik")
 		fmt.Println("10. Tampilkan Semua Komponen")
-		fmt.Println("11. Inisialisasi Data")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih menu: ")
 		fmt.Scan(&pilihan)
@@ -174,15 +173,18 @@ func hapusKomponen(T *TabKomponen, n *int) {
 func AscendingInsertionSorturutNomorSeri(T *TabKomponen, n int) {
 	var pass, i int
 	var temp Komponen
-
-	for pass = 1; pass < n; pass++ {
-		temp = T[pass]
-		i = pass - 1
-		for i >= 0 && T[i].NomorSeri > temp.NomorSeri {
-			T[i+1] = T[i]
-			i = i - 1
+	if n < 2 {
+		fmt.Println("Data masih kosong")
+	} else {
+		for pass = 1; pass < n; pass++ {
+			temp = T[pass]
+			i = pass - 1
+			for i >= 0 && T[i].NomorSeri > temp.NomorSeri {
+				T[i+1] = T[i]
+				i = i - 1
+			}
+			T[i+1] = temp
 		}
-		T[i+1] = temp
 	}
 }
 
@@ -190,16 +192,20 @@ func DescendingSelectionSorturutNama(T *TabKomponen, n int) {
 	var pass, i, maxIdx int
 	var temp Komponen
 
-	for pass = 0; pass < n-1; pass++ {
-		maxIdx = pass
-		for i = pass + 1; i < n; i++ {
-			if T[i].Nama > T[maxIdx].Nama {
-				maxIdx = i
+	if n < 2 {
+		fmt.Println("Data masih kosong")
+	} else {
+		for pass = 0; pass < n-1; pass++ {
+			maxIdx = pass
+			for i = pass + 1; i < n; i++ {
+				if T[i].Nama > T[maxIdx].Nama {
+					maxIdx = i
+				}
 			}
+			temp = T[pass]
+			T[pass] = T[maxIdx]
+			T[maxIdx] = temp
 		}
-		temp = T[pass]
-		T[pass] = T[maxIdx]
-		T[maxIdx] = temp
 	}
 }
 
@@ -210,28 +216,30 @@ func BinarySearchNama(T TabKomponen, n int) {
 	right = n - 1
 	foundIdx = -1
 
-	DescendingSelectionSorturutNama(&T, n)
-
-	fmt.Print("Masukkan Nama komponen yang dicari: ")
-	fmt.Scan(&cari)
-
-	for left <= right && foundIdx == -1 {
-		mid = (left + right) / 2
-		if T[mid].Nama == cari {
-			foundIdx = mid
-		} else if T[mid].Nama > cari {
-			left = mid + 1
-		} else {
-			right = mid - 1
-		}
-	}
-
-	if foundIdx != -1 {
-		fmt.Println("Komponen ditemukan (metode Binary Search): ")
-		fmt.Printf("Nomor Seri: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
-			T[foundIdx].NomorSeri, T[foundIdx].Nama, T[foundIdx].StatusKesehatan, T[foundIdx].Suhu, T[foundIdx].BebanKerja)
+	if n == 0 {
+		fmt.Println("Data masih kosong")
 	} else {
-		fmt.Println("Komponen tidak ditemukan")
+		fmt.Print("Masukkan Nama komponen yang dicari: ")
+		fmt.Scan(&cari)
+
+		for left <= right && foundIdx == -1 {
+			mid = (left + right) / 2
+			if T[mid].Nama == cari {
+				foundIdx = mid
+			} else if T[mid].Nama > cari {
+				left = mid + 1
+			} else {
+				right = mid - 1
+			}
+		}
+
+		if foundIdx != -1 {
+			fmt.Println("Komponen ditemukan (metode Binary Search): ")
+			fmt.Printf("Nomor Seri: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
+				T[foundIdx].NomorSeri, T[foundIdx].Nama, T[foundIdx].StatusKesehatan, T[foundIdx].Suhu, T[foundIdx].BebanKerja)
+		} else {
+			fmt.Println("Komponen tidak ditemukan")
+		}
 	}
 }
 
@@ -240,21 +248,25 @@ func sequentialSearchStatus(T TabKomponen, n int) {
 	var i int
 	var found bool = false
 
-	fmt.Print("Masukkan Status Kesehatan yang dicari ( sehat / lag / overheat )")
-	fmt.Scan(&cari)
+	if n == 0 {
+		fmt.Println("Data masih kosong")
+	} else {
+		fmt.Print("Masukkan Status Kesehatan yang dicari ( sehat / lag / overheat ): ")
+		fmt.Scan(&cari)
 
-	fmt.Println("Hasil pencarian (metode Sequential Search):")
+		fmt.Println("Hasil pencarian (metode Sequential Search):")
 
-	for i = 0; i < n; i++ {
-		if T[i].StatusKesehatan == cari {
-			fmt.Printf("- Nomor Seri: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
-				T[i].NomorSeri, T[i].Nama, T[i].StatusKesehatan, T[i].Suhu, T[i].BebanKerja)
-			found = true
+		for i = 0; i < n; i++ {
+			if T[i].StatusKesehatan == cari {
+				fmt.Printf("- Nomor Seri: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
+					T[i].NomorSeri, T[i].Nama, T[i].StatusKesehatan, T[i].Suhu, T[i].BebanKerja)
+				found = true
+			}
 		}
-	}
 
-	if !found {
-		fmt.Println("Tidak ada komponen dengan status tersebut")
+		if !found {
+			fmt.Println("Tidak ada komponen dengan status tersebut")
+		}
 	}
 }
 
@@ -265,21 +277,20 @@ func tampilStatistik(T TabKomponen, n int) {
 
 	if n == 0 {
 		fmt.Println("Data masih kosong")
-		return
-	}
-
-	for i = 0; i < n; i++ {
-		status = T[i].StatusKesehatan
-		if status == "lag" || status == "overheat" {
-			bermasalah = bermasalah + 1
+	} else {
+		for i = 0; i < n; i++ {
+			status = T[i].StatusKesehatan
+			if status == "lag" || status == "overheat" {
+				bermasalah = bermasalah + 1
+			}
+			totalSuhu = totalSuhu + T[i].Suhu
 		}
-		totalSuhu = totalSuhu + T[i].Suhu
-	}
 
-	rataSuhu = totalSuhu / float64(n)
-	fmt.Println("--- Statistik Sistem ---")
-	fmt.Printf("Jumlah komponen bermasalah (lag/overheat): %d\n", bermasalah)
-	fmt.Printf("Rata-rata suhu komponen: %.2f\n", rataSuhu)
+		rataSuhu = totalSuhu / float64(n)
+		fmt.Println("--- Statistik Sistem ---")
+		fmt.Printf("Jumlah komponen bermasalah (lag / overheat): %d\n", bermasalah)
+		fmt.Printf("Rata-rata suhu komponen: %.2f\n", rataSuhu)
+	}
 }
 
 func tampilSemua(T TabKomponen, n int) {
@@ -319,33 +330,37 @@ func catatLog(T *TabKomponen, n int) {
 	var found bool
 	found = false
 
-	fmt.Print("Masukkan Nomor Seri komponen: ")
-	fmt.Scan(&ns)
+	if n == 0 {
+		fmt.Println("Data masih kosong")
+	} else {
+		fmt.Print("Masukkan Nomor Seri komponen: ")
+		fmt.Scan(&ns)
 
-	for i = 0; i < n && !found; i++ {
-		if T[i].NomorSeri == ns {
-			found = true
-			if T[i].NLog < 1000 {
-				log.Suhu = T[i].Suhu
-				log.BebanKerja = T[i].BebanKerja
-				T[i].Log[T[i].NLog] = log
-				T[i].NLog = T[i].NLog + 1
-			} else {
-				fmt.Println("Kapasitas log penuh.")
+		for i = 0; i < n && !found; i++ {
+			if T[i].NomorSeri == ns {
+				found = true
+				if T[i].NLog < 1000 {
+					log.Suhu = T[i].Suhu
+					log.BebanKerja = T[i].BebanKerja
+					T[i].Log[T[i].NLog] = log
+					T[i].NLog = T[i].NLog + 1
+				} else {
+					fmt.Println("Kapasitas log penuh")
+				}
+
+				fmt.Print("Masukkan Suhu baru: ")
+				fmt.Scan(&suhuBaru)
+				fmt.Print("Masukkan Beban Kerja baru (%): ")
+				fmt.Scan(&bebanBaru)
+
+				T[i].Suhu = suhuBaru
+				T[i].BebanKerja = bebanBaru
+				T[i].StatusKesehatan = tentukanStatus(T[i].Suhu, T[i].BebanKerja)
+				fmt.Println("Data komponen berhasil diperbarui")
 			}
-
-			fmt.Print("Masukkan Suhu baru: ")
-			fmt.Scan(&suhuBaru)
-			fmt.Print("Masukkan Beban Kerja baru (%): ")
-			fmt.Scan(&bebanBaru)
-
-			T[i].Suhu = suhuBaru
-			T[i].BebanKerja = bebanBaru
-			T[i].StatusKesehatan = tentukanStatus(T[i].Suhu, T[i].BebanKerja)
-			fmt.Println("Data komponen berhasil diperbarui.")
 		}
-	}
-	if found == false {
-		fmt.Println("Komponen tidak ditemukan.")
+		if found == false {
+			fmt.Println("Komponen tidak ditemukan")
+		}
 	}
 }
