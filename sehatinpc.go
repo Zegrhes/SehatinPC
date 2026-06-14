@@ -74,8 +74,6 @@ func main() {
 				tampilStatistik(data, n)
 			case 10:
 				tampilSemua(data, n)
-			case 11:
-				isiDataDummy(&data, &n)
 			default:
 				fmt.Println("Pilihan tidak valid")
 			}
