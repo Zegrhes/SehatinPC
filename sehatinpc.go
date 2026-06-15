@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const MAX = 1000
 
@@ -27,7 +29,10 @@ func main() {
 	var jalan bool
 	jalan = true
 
+	inisialisasiData(&data, &n)
+
 	for jalan == true {
+		fmt.Println()
 		fmt.Println("=====================================")
 		fmt.Println(" Sistem Monitoring Kesehatan PC ")
 		fmt.Println("=====================================")
@@ -41,10 +46,12 @@ func main() {
 		fmt.Println("8. Cari Komponen (Status Kesehatan - Sequential Search)")
 		fmt.Println("9. Tampilkan Statistik")
 		fmt.Println("10. Tampilkan Semua Komponen")
+		fmt.Println("11. Tampilkan Log Status Komponen")
+		fmt.Println("12. Statistik Komponen")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih menu: ")
 		fmt.Scan(&pilihan)
-
+		fmt.Println()
 		if pilihan == 0 {
 			fmt.Println("Keluar dari program..............")
 			jalan = false
@@ -71,9 +78,13 @@ func main() {
 			case 8:
 				sequentialSearchStatus(data, n)
 			case 9:
-				tampilStatistik(data, n)
+				statistikPC(data, n)
 			case 10:
 				tampilSemua(data, n)
+			case 11:
+				tampilLog(data, n)
+			case 12:
+				statistikKomponen(data, n)
 			default:
 				fmt.Println("Pilihan tidak valid")
 			}
@@ -102,7 +113,7 @@ func tambahKomponen(T *TabKomponen, n *int) {
 
 func ubahKomponen(T *TabKomponen, n int) {
 	var ns string
-	var idx, i int
+	var i, idx int
 	i = 0
 	idx = -1
 
@@ -139,7 +150,7 @@ func ubahKomponen(T *TabKomponen, n int) {
 
 func hapusKomponen(T *TabKomponen, n *int) {
 	var ns string
-	var idx, i int
+	var i, idx int
 	i = 0
 	idx = -1
 
@@ -235,7 +246,7 @@ func BinarySearchNama(T TabKomponen, n int) {
 
 		if foundIdx != -1 {
 			fmt.Println("Komponen ditemukan (metode Binary Search): ")
-			fmt.Printf("Nomor Seri: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
+			fmt.Printf("Nomor Seri: %-8s | Nama: %-12s | Status: %-9s | Suhu: %7.2f | Beban: %6.2f%%\n",
 				T[foundIdx].NomorSeri, T[foundIdx].Nama, T[foundIdx].StatusKesehatan, T[foundIdx].Suhu, T[foundIdx].BebanKerja)
 		} else {
 			fmt.Println("Komponen tidak ditemukan")
@@ -258,19 +269,19 @@ func sequentialSearchStatus(T TabKomponen, n int) {
 
 		for i = 0; i < n; i++ {
 			if T[i].StatusKesehatan == cari {
-				fmt.Printf("- Nomor Seri: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
+				fmt.Printf("- Nomor Seri: %-8s | Nama: %-12s | Status: %-9s | Suhu: %7.2f | Beban: %6.2f%%\n",
 					T[i].NomorSeri, T[i].Nama, T[i].StatusKesehatan, T[i].Suhu, T[i].BebanKerja)
 				found = true
 			}
 		}
 
-		if !found {
+		if found == false {
 			fmt.Println("Tidak ada komponen dengan status tersebut")
 		}
 	}
 }
 
-func tampilStatistik(T TabKomponen, n int) {
+func statistikPC(T TabKomponen, n int) {
 	var bermasalah, i int
 	var totalSuhu, rataSuhu float64
 	var status string
@@ -300,9 +311,8 @@ func tampilSemua(T TabKomponen, n int) {
 		fmt.Println("Data masih kosong")
 	} else {
 		fmt.Println("Daftar Komponen:")
-
 		for i = 0; i < n; i++ {
-			fmt.Printf("%d. SN: %s | Nama: %s | Status: %s | Suhu: %.2f | Beban: %.2f%%\n",
+			fmt.Printf("%d. SN: %-8s | Nama: %-12s | Status: %-9s | Suhu: %7.2f | Beban: %6.2f%%\n",
 				i+1, T[i].NomorSeri, T[i].Nama, T[i].StatusKesehatan, T[i].Suhu, T[i].BebanKerja)
 		}
 	}
@@ -336,7 +346,7 @@ func catatLog(T *TabKomponen, n int) {
 		fmt.Print("Masukkan Nomor Seri komponen: ")
 		fmt.Scan(&ns)
 
-		for i = 0; i < n && !found; i++ {
+		for i < n && found == false {
 			if T[i].NomorSeri == ns {
 				found = true
 				if T[i].NLog < 1000 {
@@ -358,9 +368,138 @@ func catatLog(T *TabKomponen, n int) {
 				T[i].StatusKesehatan = tentukanStatus(T[i].Suhu, T[i].BebanKerja)
 				fmt.Println("Data komponen berhasil diperbarui")
 			}
+			i = i + 1
 		}
 		if found == false {
 			fmt.Println("Komponen tidak ditemukan")
 		}
 	}
+}
+
+func tampilLog(T TabKomponen, n int) {
+	var ns string
+	var i, j int
+	var found bool
+
+	if n == 0 {
+		fmt.Println("Data masih kosong")
+	} else {
+		fmt.Print("Masukkan Nomor Seri komponen: ")
+		fmt.Scan(&ns)
+
+		for i < n && found == false {
+			if T[i].NomorSeri == ns {
+				found = true
+				fmt.Printf("\nLog Komponen %s (%s):\n", T[i].Nama, T[i].NomorSeri)
+				for j = 0; j < T[i].NLog; j++ {
+					fmt.Printf("%d. Suhu: %7.2f | Beban: %6.2f%%\n", j+1, T[i].Log[j].Suhu, T[i].Log[j].BebanKerja)
+				}
+			}
+			i = i + 1
+		}
+
+		if found == false {
+			fmt.Println("Komponen tidak ditemukan")
+		}
+	}
+}
+
+func statistikKomponen(T TabKomponen, n int) {
+	var ns string
+	var i, j int
+	var found bool
+
+	if n == 0 {
+		fmt.Println("Data masih kosong")
+	} else {
+		fmt.Print("Masukkan Nomor Seri: ")
+		fmt.Scan(&ns)
+
+		for i < n && found == false {
+			if T[i].NomorSeri == ns {
+				found = true
+
+				fmt.Println("\n--- Data Komponen ---")
+				fmt.Printf("Nomor Seri    : %s\n", T[i].NomorSeri)
+				fmt.Printf("Nama          : %s\n", T[i].Nama)
+				fmt.Printf("Status        : %s\n", T[i].StatusKesehatan)
+				fmt.Printf("Suhu          : %7.2f\n", T[i].Suhu)
+				fmt.Printf("Beban Kerja   : %7.2f%%\n", T[i].BebanKerja)
+
+				fmt.Println("\n--- Log Komponen ---")
+				for j = 0; j < T[i].NLog; j++ {
+					fmt.Printf("%d. Suhu: %7.2f | Beban: %6.2f%%\n", j+1, T[i].Log[j].Suhu, T[i].Log[j].BebanKerja)
+				}
+
+				var totalSuhu, totalBeban, maxSuhu, minSuhu, maxBeban, minBeban float64
+				minSuhu = T[i].Log[0].Suhu
+				minBeban = T[i].Log[0].BebanKerja
+				for j = 0; j < T[i].NLog; j++ {
+					totalSuhu = totalSuhu + T[i].Log[j].Suhu
+					totalBeban = totalBeban + T[i].Log[j].BebanKerja
+					if T[i].Log[j].Suhu > maxSuhu {
+						maxSuhu = T[i].Log[j].Suhu
+					}
+					if T[i].Log[j].Suhu < minSuhu {
+						minSuhu = T[i].Log[j].Suhu
+					}
+					if T[i].Log[j].BebanKerja > maxBeban {
+						maxBeban = T[i].Log[j].BebanKerja
+					}
+					if T[i].Log[j].BebanKerja < minBeban {
+						minBeban = T[i].Log[j].BebanKerja
+					}
+				}
+
+				fmt.Println("\n--- Statistik Komponen ---")
+				fmt.Printf("Rata-rata Suhu         : %7.2f\n", totalSuhu/float64(T[i].NLog))
+				fmt.Printf("Suhu Tertinggi         : %7.2f\n", maxSuhu)
+				fmt.Printf("Suhu Terendah          : %7.2f\n", minSuhu)
+				fmt.Printf("Rata-rata Beban        : %7.2f%%\n", totalBeban/float64(T[i].NLog))
+				fmt.Printf("Beban Tertinggi        : %7.2f%%\n", maxBeban)
+				fmt.Printf("Beban Terendah         : %7.2f%%\n", minBeban)
+			}
+			i = i + 1
+		}
+
+		if found == false {
+			fmt.Println("Komponen tidak ditemukan")
+		}
+	}
+}
+
+func inisialisasiData(T *TabKomponen, n *int) {
+	var i, j int
+	type logEntry struct{ suhu, bebanKerja float64 }
+	type dataTemp struct {
+		nomorSeri, nama, statusKesehatan string
+		suhu, bebanKerja                 float64
+		logs                             [5]logEntry
+	}
+
+	var dataAwal = [8]dataTemp{
+		{"PRC-001", "Processor", "lag", 72.5, 65.0, [5]logEntry{{72.5, 65.0}, {73.0, 66.0}, {71.5, 64.0}, {72.0, 65.0}, {73.5, 67.0}}},
+		{"GPU-001", "GPU", "overheat", 81.0, 90.0, [5]logEntry{{81.0, 90.0}, {82.0, 91.0}, {80.0, 89.0}, {81.5, 90.0}, {83.0, 92.0}}},
+		{"RAM-001", "RAM", "sehat", 45.2, 55.0, [5]logEntry{{45.2, 55.0}, {46.0, 56.0}, {44.5, 54.0}, {45.0, 55.0}, {46.5, 57.0}}},
+		{"SSD-001", "SSD", "sehat", 38.0, 30.0, [5]logEntry{{38.0, 30.0}, {39.0, 31.0}, {37.0, 29.0}, {38.5, 30.0}, {39.5, 32.0}}},
+		{"MB-001", "Motherboard", "sehat", 52.8, 45.0, [5]logEntry{{52.8, 45.0}, {53.5, 46.0}, {52.0, 44.0}, {53.0, 45.0}, {54.0, 47.0}}},
+		{"PSU-001", "PSU", "sehat", 48.3, 70.0, [5]logEntry{{48.3, 70.0}, {49.0, 71.0}, {47.5, 69.0}, {48.0, 70.0}, {49.5, 72.0}}},
+		{"CL-001", "Cooler", "sehat", 35.0, 50.0, [5]logEntry{{35.0, 50.0}, {36.0, 51.0}, {34.0, 49.0}, {35.5, 50.0}, {36.5, 52.0}}},
+		{"CF-001", "Case Fan", "sehat", 32.5, 40.0, [5]logEntry{{32.5, 40.0}, {33.5, 41.0}, {31.5, 39.0}, {32.0, 40.0}, {34.0, 42.0}}},
+	}
+
+	for i = 0; i < 8; i++ {
+		T[i].NomorSeri = dataAwal[i].nomorSeri
+		T[i].Nama = dataAwal[i].nama
+		T[i].StatusKesehatan = dataAwal[i].statusKesehatan
+		T[i].Suhu = dataAwal[i].suhu
+		T[i].BebanKerja = dataAwal[i].bebanKerja
+		T[i].NLog = 5
+		for j = 0; j < 5; j++ {
+			T[i].Log[j] = isiLog{dataAwal[i].logs[j].suhu, dataAwal[i].logs[j].bebanKerja}
+		}
+	}
+
+	*n = 8
+	fmt.Println("Data dummy berhasil diinisialisasi")
 }
