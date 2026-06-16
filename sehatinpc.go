@@ -409,7 +409,7 @@ func statistikKomponen(T TabKomponen, n int) {
 	var i, j int
 	var found bool
 	var totalSuhu, totalBeban, maxSuhu, minSuhu, maxBeban, minBeban float64
-	
+
 	if n == 0 {
 		fmt.Println("Data masih kosong")
 	} else {
@@ -432,9 +432,9 @@ func statistikKomponen(T TabKomponen, n int) {
 					fmt.Printf("%d. Suhu: %7.2f | Beban: %6.2f%%\n", j+1, T[i].Log[j].Suhu, T[i].Log[j].BebanKerja)
 				}
 
-				
 				minSuhu = T[i].Log[0].Suhu
 				minBeban = T[i].Log[0].BebanKerja
+				
 				for j = 0; j < T[i].NLog; j++ {
 					totalSuhu = totalSuhu + T[i].Log[j].Suhu
 					totalBeban = totalBeban + T[i].Log[j].BebanKerja
@@ -502,5 +502,5 @@ func inisialisasiData(T *TabKomponen, n *int) {
 	}
 
 	*n = 8
-	fmt.Println("Data dummy berhasil diinisialisasi")
+	fmt.Println("Data berhasil diinisialisasi")
 }
