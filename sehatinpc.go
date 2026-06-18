@@ -432,9 +432,13 @@ func statistikKomponen(T TabKomponen, n int) {
 					fmt.Printf("%d. Suhu: %7.2f | Beban: %6.2f%%\n", j+1, T[i].Log[j].Suhu, T[i].Log[j].BebanKerja)
 				}
 
-				minSuhu = T[i].Log[0].Suhu
-				minBeban = T[i].Log[0].BebanKerja
-				
+				totalSuhu = T[i].Suhu
+				totalBeban = T[i].BebanKerja
+				maxSuhu = T[i].Suhu
+				maxBeban = T[i].BebanKerja
+				minSuhu = T[i].Suhu
+				minBeban = T[i].BebanKerja
+
 				for j = 0; j < T[i].NLog; j++ {
 					totalSuhu = totalSuhu + T[i].Log[j].Suhu
 					totalBeban = totalBeban + T[i].Log[j].BebanKerja
@@ -453,10 +457,10 @@ func statistikKomponen(T TabKomponen, n int) {
 				}
 
 				fmt.Println("\n--- Statistik Komponen ---")
-				fmt.Printf("Rata-rata Suhu         : %7.2f\n", totalSuhu/float64(T[i].NLog))
+				fmt.Printf("Rata-rata Suhu         : %7.2f\n", totalSuhu/float64(T[i].NLog+1))
 				fmt.Printf("Suhu Tertinggi         : %7.2f\n", maxSuhu)
 				fmt.Printf("Suhu Terendah          : %7.2f\n", minSuhu)
-				fmt.Printf("Rata-rata Beban        : %7.2f%%\n", totalBeban/float64(T[i].NLog))
+				fmt.Printf("Rata-rata Beban        : %7.2f%%\n", totalBeban/float64(T[i].NLog+1))
 				fmt.Printf("Beban Tertinggi        : %7.2f%%\n", maxBeban)
 				fmt.Printf("Beban Terendah         : %7.2f%%\n", minBeban)
 			}
